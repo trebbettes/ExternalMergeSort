@@ -7,7 +7,7 @@ namespace Tests
     {
         private readonly List<string> _fileNames;
         private readonly string _lines = "abcdefghijklmnopqrstuvwxyz";
-        private readonly int _fileCount = 10;
+        private readonly int _fileCount = 50;
 
         public ExternalMergeSortTests()
         {
@@ -33,20 +33,6 @@ namespace Tests
         }
 
         [Fact]
-        public void ResultsStreamShouldBeAtStart()
-        {
-            var ms = new ExternalMergeSort(new ExternalMergeSort.Settings
-            {
-                FileNames = _fileNames,
-            });
-
-            ms.Merge(results =>
-            {
-                Assert.Equal(0, results.BaseStream.Position);
-            });
-        }
-
-        [Fact]
         public void AllLinesShouldAppearInResults()
         {
             var ms = new ExternalMergeSort(new ExternalMergeSort.Settings
@@ -67,7 +53,7 @@ namespace Tests
 
 
         [Fact]
-        public void AllResultsShouldBeInCorrectOrder()
+        public void ResultsShouldBeInTheCorrectOrder()
         {
             var ms = new ExternalMergeSort(new ExternalMergeSort.Settings
             {
@@ -111,7 +97,7 @@ namespace Tests
                 {
                     lines++;
                 }
-                Assert.Equal(_fileCount * _lines.Length - 10, lines);
+                Assert.Equal(_fileCount * _lines.Length - _fileCount, lines);
             });
         }
 
@@ -127,8 +113,8 @@ namespace Tests
 
             ms.Merge(results => { });
 
-            Assert.Equal(19, progress.Count);
-            Assert.True(progress.Last() > 0.99);
+            Assert.Equal(_fileCount - 1, progress.Count);
+            Assert.True(progress.Last() == 1);
         }
 
 

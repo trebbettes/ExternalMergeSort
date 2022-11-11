@@ -31,7 +31,7 @@
         public ExternalMergeSort(Settings settings)
         {
             _settings = settings;
-            _progressIncrement = 1 / GetTotalMerges();
+            _progressIncrement = 1 / ((double)settings.FileNames.Count - 1);
         }
 
         public void Merge(Action<StreamReader> then) 
@@ -47,23 +47,13 @@
             result.Dispose();
         }
 
-        private double GetTotalMerges()
-        {
-            var total = 0;
-            var last = _settings.FileNames.Count;
-            while (last > 0)
-            {
-                total += last;
-                last /= 2;
-            }
-            return total + 1;
-        }
 
         private MergeReader MergeSort(int min, int max)
         {
-            _settings.ProgressHandler?.Invoke(_progress += _progressIncrement);
 
             if (min == max) return new MergeReader(_settings.FileNames[min], _settings);
+
+            _settings.ProgressHandler?.Invoke(Math.Round(_progress += _progressIncrement, 2));
 
             var mid = (max - min) / 2 + min;
 
